@@ -5,8 +5,7 @@
 <img width="393" alt="Screenshot 2022-08-13 at 9 17 44 AM" src="https://user-images.githubusercontent.com/65232750/184475462-af8cdbda-8f2d-476d-ad53-3a2b40379342.png">
 
 
-
-apk :https://drive.google.com/file/d/1iZg0Bz93tjsDkf4gC96v8luNJybBstlw/view?usp=sharing 
+APK [(Here)](https://drive.google.com/file/d/1iZg0Bz93tjsDkf4gC96v8luNJybBstlw/view?usp=sharing).
 
 API:
 URL -> https://jsonplaceholder.typicode.com
