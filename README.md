@@ -20,3 +20,13 @@ URL -> https://jsonplaceholder.typicode.com
 Path -> /photos
 Required Params -> "albumId"
 Method -> Get
+
+
+Dependencies used
+
+- Flutter bloc ( state management  and business logic)
+- http (Api Network calls) 
+- hive (Used to cache data)
+- path_provider (Get application directory for hive to store the data)
+- shimmer (creating shimmer errect for place holders)
+- cached_network_image (cache network image)
