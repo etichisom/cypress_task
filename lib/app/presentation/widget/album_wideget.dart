@@ -1,0 +1,99 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cypress/app/data/local/local_database.dart';
+import 'package:cypress/app/data/model/album_model.dart';
+import 'package:cypress/app/data/repository/album_repository.dart';
+import 'package:cypress/app/presentation/bloc/photo_bloc/photo_bloc.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shimmer/shimmer.dart';
+
+import 'loading_list.dart';
+
+// ignore: must_be_immutable
+class AlbumWidget extends StatelessWidget {
+  final AlbumModel albumModel;
+   AlbumWidget(this.albumModel,{Key? key}) : super(key: key);
+ final ScrollController controller=ScrollController();
+ bool  scroll = true;
+ @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.maxFinite,
+      height: 200,
+      child: BlocProvider(
+          create:(_)=>PhotoBloc(
+              albumRepository:RepositoryProvider.of<AlbumRepository>(context),
+              localDatabase: RepositoryProvider.of<LocalDatabase>(context),
+          )..add(LoadPhotoEvent(albumModel.id.toString())),
+        child: Scaffold(
+          body: BlocBuilder<PhotoBloc,PhotoState>(
+              builder: (context,state){
+                if(state is PhotoInitial){
+                  return const LoadingList();
+                }else if(state is PhotoError) {
+                  return const Center(child: Text("Error"));
+                }else if(state is PhotoLoaded){
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Expanded(child: NotificationListener<ScrollEndNotification>(
+                          onNotification: (scrollEnd) {
+                            final metrics = scrollEnd.metrics;
+                            if (metrics.atEdge) {
+                              bool isTop = metrics.pixels == metrics.maxScrollExtent;
+                              if (isTop) {
+                                // controller.animateTo(
+                                //     controller.position.minScrollExtent,
+                                //     duration: const Duration(milliseconds: 100),
+                                //     curve: Curves.easeOut
+                                // );
+                              }
+                            }
+                            return true;
+                          },
+                          child: ListView.builder(
+                            controller: controller,
+                            scrollDirection: Axis.horizontal,
+                            //shrinkWrap: true,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: state.photoModel.length,
+                              itemBuilder: (context,index){
+                                 var data =state.photoModel[index];
+                                 return Padding(
+                                   padding: const EdgeInsets.only(left: 10,right: 10),
+                                   child: CachedNetworkImage(
+                                       height: 150,
+                                       width: 200,
+                                       fit: BoxFit.cover,
+                                       imageUrl: data.url,
+                                        errorWidget: (context, url, error) => const SizedBox(),
+                                     placeholder: (context,string){
+                                        return Shimmer.fromColors(
+                                          baseColor: Colors.red,
+                                          highlightColor: Colors.yellow,
+                                          child: Container(
+                                            height: 150,
+                                            width: 200,
+                                            color: Colors.white,
+                                          ),
+                                        );
+                                     },
+                                   ),
+                                 );
+                              }
+                          ),
+                        ))
+                      ],
+                    ),
+                  );
+                }
+                return Container();
+              }
+          ),
+        ),
+      ),
+    );
+  }
+}
