@@ -33,57 +33,47 @@ class AlbumWidget extends StatelessWidget {
                 }else if(state is PhotoError) {
                   return const Center(child: Text("Error"));
                 }else if(state is PhotoLoaded){
+                  controller.addListener(() {
+                    if (controller.position.pixels == controller.position.maxScrollExtent) {
+                      //scroll list to the  last item
+                      controller.position.restoreOffset(0);
+                    }
+                  });
                   return Padding(
                     padding: const EdgeInsets.symmetric(vertical: 10),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Expanded(child: NotificationListener<ScrollEndNotification>(
-                          onNotification: (scrollEnd) {
-                            final metrics = scrollEnd.metrics;
-                            if (metrics.atEdge) {
-                              bool isTop = metrics.pixels == metrics.maxScrollExtent;
-                              if (isTop) {
-                                // controller.animateTo(
-                                //     controller.position.minScrollExtent,
-                                //     duration: const Duration(milliseconds: 100),
-                                //     curve: Curves.easeOut
-                                // );
-                              }
+                        Expanded(child: ListView.builder(
+                          controller: controller,
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: state.photoModel.length,
+                            itemBuilder: (context,index){
+                               var data =state.photoModel[index];
+                               return Padding(
+                                 padding: const EdgeInsets.only(left: 10,right: 10),
+                                 child: CachedNetworkImage(
+                                     height: 150,
+                                     width: 200,
+                                     fit: BoxFit.cover,
+                                     imageUrl: data.url,
+                                      errorWidget: (context, url, error) => const SizedBox(),
+                                   placeholder: (context,string){
+                                      return Shimmer.fromColors(
+                                        baseColor: Colors.red,
+                                        highlightColor: Colors.yellow,
+                                        child: Container(
+                                          height: 150,
+                                          width: 200,
+                                          color: Colors.white,
+                                        ),
+                                      );
+                                   },
+                                 ),
+                               );
                             }
-                            return true;
-                          },
-                          child: ListView.builder(
-                            controller: controller,
-                            scrollDirection: Axis.horizontal,
-                            //shrinkWrap: true,
-                            physics: const BouncingScrollPhysics(),
-                            itemCount: state.photoModel.length,
-                              itemBuilder: (context,index){
-                                 var data =state.photoModel[index];
-                                 return Padding(
-                                   padding: const EdgeInsets.only(left: 10,right: 10),
-                                   child: CachedNetworkImage(
-                                       height: 150,
-                                       width: 200,
-                                       fit: BoxFit.cover,
-                                       imageUrl: data.url,
-                                        errorWidget: (context, url, error) => const SizedBox(),
-                                     placeholder: (context,string){
-                                        return Shimmer.fromColors(
-                                          baseColor: Colors.red,
-                                          highlightColor: Colors.yellow,
-                                          child: Container(
-                                            height: 150,
-                                            width: 200,
-                                            color: Colors.white,
-                                          ),
-                                        );
-                                     },
-                                   ),
-                                 );
-                              }
-                          ),
                         ))
                       ],
                     ),

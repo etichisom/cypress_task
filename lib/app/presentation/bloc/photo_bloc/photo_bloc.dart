@@ -17,6 +17,10 @@ class PhotoBloc extends Bloc<PhotoEvent, PhotoState> {
     required this.localDatabase
   }) : super(PhotoInitial()) {
     on<LoadPhotoEvent>((event, emit) async{
+      /**
+          Get data from the local database  with the album id if it exist, if it does not exist if fetch
+          data from the internet and store it on the local data base
+       **/
        var data = await localDatabase.getPhoto(event.id);
        if(data !=null){
          emit(PhotoLoaded(data));

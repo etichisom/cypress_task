@@ -16,6 +16,10 @@ class AlbumBloc extends Bloc<AlbumEvent, AlbumState> {
     required this.localDatabase
   }) : super(AlbumInitial()) {
     on<LoadAlbumEvent>((event, emit)async {
+      /**
+          Get data from the local database if it exist, if it does not exist if fetch
+          data from the internet and store it on the local data base
+        **/
       var data = await localDatabase.getAlbum();
       if(data!=null){
         emit(AlbumLoadedState(data));
@@ -29,6 +33,7 @@ class AlbumBloc extends Bloc<AlbumEvent, AlbumState> {
     try{
       var data = await albumRepository.getAlbum();
       if(data!=null){
+        //stores album list on the local  database
         localDatabase.storeAlbum(data);
         emit(AlbumLoadedState(data));
       }
