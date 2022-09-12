@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cypress/app/data/local/local_database.dart';
 import 'package:cypress/app/data/model/album_model.dart';
@@ -49,17 +51,33 @@ class AlbumWidget extends StatelessWidget {
                           scrollDirection: Axis.horizontal,
                           shrinkWrap: true,
                           physics: const BouncingScrollPhysics(),
-                          itemCount: state.photoModel.length,
-                            itemBuilder: (context,index){
+                            itemCount: 10000000,
+                            itemBuilder: (context,i){
+                              final index = i % state.photoModel.length;
                                var data =state.photoModel[index];
+                             var imageLink = data.url;
+
                                return Padding(
                                  padding: const EdgeInsets.only(left: 10,right: 10),
                                  child: CachedNetworkImage(
                                      height: 150,
                                      width: 200,
                                      fit: BoxFit.cover,
-                                     imageUrl: data.url,
-                                      errorWidget: (context, url, error) => const SizedBox(),
+                                     imageUrl: imageLink,
+                                      errorWidget: (context, url, error){
+                                       print(error);
+                                       return Container(
+                                         height: 150,
+                                         width: 200,
+                                         color:Colors.primaries[Random().nextInt(Colors.primaries.length)],
+                                         child: const Center(
+                                           child: Text("Error loading image",style: TextStyle(
+                                             color: Colors.white,
+                                             fontWeight: FontWeight.w600
+                                           ),),
+                                         ),
+                                       );
+                                      },
                                    placeholder: (context,string){
                                       return Shimmer.fromColors(
                                         baseColor: Colors.red,

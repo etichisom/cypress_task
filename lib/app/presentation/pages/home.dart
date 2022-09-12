@@ -28,22 +28,18 @@ class Home extends StatelessWidget {
                 if(state is AlbumInitial){
                   return const Center(child: CircularProgressIndicator());
                 }else if(state is AlbumLoadedState){
-                  controller.addListener(() {
-                    if (controller.position.pixels == controller.position.maxScrollExtent) {
-                      //scroll list to the  last item
-                      controller.position.restoreOffset(0);
-                    }
-                  });
                   return ListView.separated(
                     controller: controller,
                     padding: EdgeInsets.zero,
                     shrinkWrap: true,
                     physics: const BouncingScrollPhysics(),
-                    itemCount:state.albums.length ,
-                    itemBuilder: (context,index){
+                    itemCount: 10000000,
+                    itemBuilder: (context,i){
+                      final index = i % state.albums.length;
                       AlbumModel data = state.albums[index];
                       return ExpansionTile(
                         title: Text(data.title),
+                       leading:Text((index+1).toString())  ,
                         children: [AlbumWidget(data)],
                       );
                     }, separatorBuilder: (BuildContext context, int index) {
