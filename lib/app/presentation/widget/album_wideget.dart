@@ -71,7 +71,7 @@ class AlbumWidget extends StatelessWidget {
                                          width: 200,
                                          color:Colors.primaries[Random().nextInt(Colors.primaries.length)],
                                          child: const Center(
-                                           child: Text("Error loading image",style: TextStyle(
+                                           child: Text("600 X 600",style: TextStyle(
                                              color: Colors.white,
                                              fontWeight: FontWeight.w600
                                            ),),
